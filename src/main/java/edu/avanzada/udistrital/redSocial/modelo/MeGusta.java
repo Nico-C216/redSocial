@@ -4,6 +4,8 @@
  */
 package edu.avanzada.udistrital.redSocial.modelo;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -15,11 +17,13 @@ import lombok.NoArgsConstructor;
  *
  * @author Nicolas
  */
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeGusta {
 
+    @Id
     private UUID id = UUID.randomUUID();
     private UUID idPublicacion;
     private UUID idUsuario;

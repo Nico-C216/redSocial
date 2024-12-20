@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UsuarioControlador {
 
+    
     private final UsuarioRepositorio usuarioRepositorio;
 
     /**

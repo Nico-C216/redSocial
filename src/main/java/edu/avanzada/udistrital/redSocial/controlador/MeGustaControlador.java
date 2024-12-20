@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MeGustaControlador {
     
+    
     private final MeGustaRepositorio meGustaRepositorio;
     
     @GetMapping("/publicacion/{idPublicacion}")

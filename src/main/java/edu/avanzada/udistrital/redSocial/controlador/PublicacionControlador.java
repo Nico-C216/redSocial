@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PublicacionControlador {
     
+    
     private final PublicacionRepositorio publicacionRepositorio;
     
     /**
