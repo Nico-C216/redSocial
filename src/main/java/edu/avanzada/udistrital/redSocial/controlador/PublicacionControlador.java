@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Nicolas
  */
 @RestController
-@RequestMapping("/publicacion")
+@RequestMapping("/publicaciones")
 @RequiredArgsConstructor
 public class PublicacionControlador {
     

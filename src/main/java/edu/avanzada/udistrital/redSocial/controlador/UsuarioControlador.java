@@ -7,7 +7,6 @@ package edu.avanzada.udistrital.redSocial.controlador;
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.repository.UsuarioRepositorio;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
