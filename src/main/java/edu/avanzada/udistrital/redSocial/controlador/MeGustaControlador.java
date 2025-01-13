@@ -6,6 +6,7 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.MeGusta;
 import edu.avanzada.udistrital.redSocial.repository.MeGustaRepositorio;
+import edu.avanzada.udistrital.redSocial.service.MeGustaServicio;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,27 +30,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeGustaControlador {
     
     
-    private final MeGustaRepositorio meGustaRepositorio;
+    private final MeGustaServicio meGustaServicio;
     
     @GetMapping("/publicacion/{idPublicacion}")
-    public List<MeGusta> obtenerMeGustasPorPublicacion(@PathVariable("idPublicacion") UUID idPublicacion){
-        return meGustaRepositorio.findByIdPublicacion(idPublicacion);
+    public List<MeGusta> obtenerMeGustasPorPublicacion(@PathVariable("idPublicacion") UUID idPublicacion) {
+        return meGustaServicio.obtenerPorPublicacion(idPublicacion);
     }
     
     @PostMapping
-    public ResponseEntity<MeGusta> crearmegusta(@RequestBody MeGusta meGusta){
-        meGusta.setFechaCreacion(LocalDateTime.now());
-        MeGusta nuevoMeGusta = meGustaRepositorio.save(meGusta);
+    public ResponseEntity<MeGusta> crearMeGusta(@RequestBody MeGusta meGusta) {
+        MeGusta nuevoMeGusta = meGustaServicio.crearMeGusta(meGusta);
         return ResponseEntity.ok(nuevoMeGusta);
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarMeGusta(@PathVariable("id") UUID id){
-        if(meGustaRepositorio.existsById(id)){
-            meGustaRepositorio.deleteById(id);
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> eliminarMeGusta(@PathVariable("id") UUID id) {
+        if (!meGustaServicio.existePorId(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        meGustaServicio.eliminarMeGusta(id);
+        return ResponseEntity.noContent().build();
     }
     
 }

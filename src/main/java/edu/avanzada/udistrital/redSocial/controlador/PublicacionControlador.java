@@ -6,6 +6,7 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Publicacion;
 import edu.avanzada.udistrital.redSocial.repository.PublicacionRepositorio;
+import edu.avanzada.udistrital.redSocial.service.PublicacionServicio;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,15 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class PublicacionControlador {
     
     
-    private final PublicacionRepositorio publicacionRepositorio;
+    private final PublicacionServicio publicacionServicio;
     
     /**
      * Obtiene todas las publicaciones
      * @return 
      */
     @GetMapping
-    public List<Publicacion> obtenerTodasLasPublicaciones(){
-        return publicacionRepositorio.findAll();
+    public List<Publicacion> obtenerTodasLasPublicaciones() {
+        return publicacionServicio.obtenerTodas();
     }
     
     /**
@@ -47,7 +48,7 @@ public class PublicacionControlador {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Publicacion> obtenerPublicacionPorId(@PathVariable("id") UUID id) {
-        return publicacionRepositorio.findById(id)
+        return publicacionServicio.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -58,9 +59,8 @@ public class PublicacionControlador {
      * @return 
      */
     @PostMapping
-    public ResponseEntity<Publicacion> crearPublicacion(@RequestBody Publicacion publicacion) {
-        publicacion.setFechaCreacion(LocalDateTime.now());
-        Publicacion nuevaPublicacion = publicacionRepositorio.save(publicacion);
+     public ResponseEntity<Publicacion> crearPublicacion(@RequestBody Publicacion publicacion) {
+        Publicacion nuevaPublicacion = publicacionServicio.crearPublicacion(publicacion);
         return ResponseEntity.ok(nuevaPublicacion);
     }
     
@@ -71,11 +71,11 @@ public class PublicacionControlador {
      */
      @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarPublicacion(@PathVariable("id") UUID id) {
-        if (publicacionRepositorio.existsById(id)) {
-            publicacionRepositorio.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!publicacionServicio.existePorId(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        publicacionServicio.eliminarPublicacion(id);
+        return ResponseEntity.noContent().build();
     }
     
 }

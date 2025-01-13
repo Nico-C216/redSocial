@@ -6,6 +6,7 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.repository.UsuarioRepositorio;
+import edu.avanzada.udistrital.redSocial.service.UsuarioServicio;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsuarioControlador {
 
     
-    private final UsuarioRepositorio usuarioRepositorio;
+    private final UsuarioServicio usuarioServicio;
 
     /**
      * Obtiene todos los usuarios
@@ -38,7 +39,7 @@ public class UsuarioControlador {
      */
     @GetMapping
     public List<Usuario> obtenerTodosLosUsuarios() {
-        return usuarioRepositorio.findAll();
+        return usuarioServicio.obtenerTodos();
     }
 
     /**
@@ -48,7 +49,7 @@ public class UsuarioControlador {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable("id") UUID id) {
-        return usuarioRepositorio.findById(id)
+        return usuarioServicio.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -60,10 +61,10 @@ public class UsuarioControlador {
      */
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
-        if (usuarioRepositorio.existsByEmail(usuario.getEmail())) {
+        if (usuarioServicio.existePorEmail(usuario.getEmail())) {
             return ResponseEntity.badRequest().build();
         }
-        Usuario nuevoUsuario = usuarioRepositorio.save(usuario);
+        Usuario nuevoUsuario = usuarioServicio.crearUsuario(usuario);
         return ResponseEntity.ok(nuevoUsuario);
     }
 
@@ -75,11 +76,10 @@ public class UsuarioControlador {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("id") UUID id, @RequestBody Usuario usuario) {
-        if (!usuarioRepositorio.existsById(id)) {
+        if (!usuarioServicio.obtenerPorId(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        usuario.setId(id);
-        Usuario usuarioActualizado = usuarioRepositorio.save(usuario);
+        Usuario usuarioActualizado = usuarioServicio.actualizarUsuario(id, usuario);
         return ResponseEntity.ok(usuarioActualizado);
     }
 
@@ -90,11 +90,11 @@ public class UsuarioControlador {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable("id") UUID id) {
-        if (usuarioRepositorio.existsById(id)) {
-            usuarioRepositorio.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!usuarioServicio.obtenerPorId(id).isPresent()) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        usuarioServicio.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

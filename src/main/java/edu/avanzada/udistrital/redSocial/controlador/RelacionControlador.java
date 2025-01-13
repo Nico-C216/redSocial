@@ -6,6 +6,7 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Relacion;
 import edu.avanzada.udistrital.redSocial.repository.RelacionRepositorio;
+import edu.avanzada.udistrital.redSocial.service.RelacionServicio;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,32 +30,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class RelacionControlador {
     
     
-    private final RelacionRepositorio relacionRepositorio;
+    private final RelacionServicio relacionServicio;
     
     @GetMapping
-    public List<Relacion> obtenerTodasLasRelaciones(){
-        return relacionRepositorio.findAll();
+    public List<Relacion> obtenerTodasLasRelaciones() {
+        return relacionServicio.obtenerTodas();
     }
     
     @GetMapping("/seguidor/{idSeguidor}")
-    public List<Relacion> obtenerRelacionesPorSeguidor(@PathVariable("idSeguidor") UUID idSeguidor){
-        return relacionRepositorio.findByIdSeguidor(idSeguidor);
+    public List<Relacion> obtenerRelacionesPorSeguidor(@PathVariable("idSeguidor") UUID idSeguidor) {
+        return relacionServicio.obtenerPorSeguidor(idSeguidor);
     }
     
     @PostMapping
-    public ResponseEntity<Relacion> crearRelacion(@RequestBody Relacion relacion){
-        relacion.setFechaCreacion(LocalDateTime.now());
-        Relacion nuevaRelacion = relacionRepositorio.save(relacion);
+    public ResponseEntity<Relacion> crearRelacion(@RequestBody Relacion relacion) {
+        Relacion nuevaRelacion = relacionServicio.crearRelacion(relacion);
         return ResponseEntity.ok(nuevaRelacion);
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarRelacion(@PathVariable("id") UUID id){
-        if(relacionRepositorio.existsById(id)){
-            relacionRepositorio.deleteById(id);
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> eliminarRelacion(@PathVariable("id") UUID id) {
+        if (!relacionServicio.existePorId(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        relacionServicio.eliminarRelacion(id);
+        return ResponseEntity.noContent().build();
     }
     
 }

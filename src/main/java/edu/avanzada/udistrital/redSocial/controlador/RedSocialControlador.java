@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  *
- * @author Usuario
+ * @author Nicolas
  */
 @Controller
-public class IndexControlador {
+public class RedSocialControlador {
     
-    @GetMapping("/index")
+    @GetMapping("/redSocial")
     public String mostrarIndex(){
-        return "index";
+        return "redSocial";
     }
     
 }

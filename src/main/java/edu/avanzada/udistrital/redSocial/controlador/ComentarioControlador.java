@@ -6,6 +6,7 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Comentario;
 import edu.avanzada.udistrital.redSocial.repository.ComentarioRepositorio;
+import edu.avanzada.udistrital.redSocial.service.ComentarioServicio;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComentarioControlador {
     
     
-    private final ComentarioRepositorio comentarioRepositorio;
+    private final ComentarioServicio comentarioServicio;
     
     /**
      * Obtiene todos los comentarios
@@ -37,7 +38,7 @@ public class ComentarioControlador {
      */
     @GetMapping
     public List<Comentario> obtenerTodosLosComentarios() {
-        return comentarioRepositorio.findAll();
+        return comentarioServicio.obtenerTodos();
     }
     
     /**
@@ -47,7 +48,7 @@ public class ComentarioControlador {
      */
     @GetMapping("/publicacion/{idPublicacion}")
     public List<Comentario> obtenerComentariosPorPublicacion(@PathVariable("idPublicacion") UUID idPublicacion) {
-        return comentarioRepositorio.findByIdPublicacion(idPublicacion);
+        return comentarioServicio.obtenerPorPublicacion(idPublicacion);
     }
     
     /**
@@ -57,8 +58,7 @@ public class ComentarioControlador {
      */
     @PostMapping
     public ResponseEntity<Comentario> crearComentario(@RequestBody Comentario comentario) {
-        comentario.setFechaCreacion(LocalDateTime.now());
-        Comentario nuevoComentario = comentarioRepositorio.save(comentario);
+        Comentario nuevoComentario = comentarioServicio.crearComentario(comentario);
         return ResponseEntity.ok(nuevoComentario);
     }
     
@@ -69,11 +69,11 @@ public class ComentarioControlador {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarComentario(@PathVariable("id") UUID id) {
-        if (comentarioRepositorio.existsById(id)) {
-            comentarioRepositorio.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!comentarioServicio.existePorId(id)) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        comentarioServicio.eliminarComentario(id);
+        return ResponseEntity.noContent().build();
     }
     
 }
