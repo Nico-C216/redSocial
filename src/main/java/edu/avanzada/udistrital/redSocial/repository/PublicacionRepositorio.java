@@ -8,11 +8,13 @@ import edu.avanzada.udistrital.redSocial.modelo.Publicacion;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Usuario
  */
+@Repository
 public interface PublicacionRepositorio extends JpaRepository<Publicacion, UUID> {
 
     // Obtiene publicaciones de un usuario específico

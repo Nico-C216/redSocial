@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class RelacionServicio {
+public class RelacionServicio implements IRelacionServicio {
     
     private final RelacionRepositorio relacionRepositorio;
 

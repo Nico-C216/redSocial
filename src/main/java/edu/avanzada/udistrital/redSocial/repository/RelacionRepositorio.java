@@ -8,11 +8,13 @@ import edu.avanzada.udistrital.redSocial.modelo.Relacion;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Usuario
  */
+@Repository
 public interface RelacionRepositorio extends JpaRepository<Relacion, UUID> {
 
     // Obtiene los usuarios seguidos por un usuario

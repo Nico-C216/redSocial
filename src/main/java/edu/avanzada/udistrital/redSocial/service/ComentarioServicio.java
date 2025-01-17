@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ComentarioServicio {
+public class ComentarioServicio implements IComentarioServicio {
 
     private final ComentarioRepositorio comentarioRepositorio;
 

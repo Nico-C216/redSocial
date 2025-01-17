@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class MeGustaServicio {
+public class MeGustaServicio implements IMeGustaServicio {
 
     private final MeGustaRepositorio meGustaRepositorio;
 

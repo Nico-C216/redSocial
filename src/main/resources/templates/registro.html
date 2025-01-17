@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Red Social</title>
+</head>
+<body>
+    <div id="app">
+        <h1>Crear Cuenta</h1>
+        <form id="registroForm" onsubmit="return false;">
+            <input id="username" type="text" placeholder="Nombre de usuario" required>
+            <input id="email" type="email" placeholder="Correo electrónico" required>
+            <input id="password" type="password" placeholder="Contraseña" required>
+            <button type="submit" onclick="crearUsuario()">Registrar Usuario</button>
+        </form>
+    </div>
+
+    <script>
+        // Agregar estilos dinámicamente
+        const app = document.getElementById('app');
+        app.style.width = '300px';
+        app.style.margin = '50px auto';
+        app.style.padding = '20px';
+        app.style.border = '1px solid #ccc';
+        app.style.borderRadius = '8px';
+        app.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        app.style.textAlign = 'center';
+        app.style.fontFamily = 'Arial, sans-serif';
+
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.style.width = '90%';
+            input.style.padding = '10px';
+            input.style.margin = '10px 0';
+            input.style.border = '1px solid #ccc';
+            input.style.borderRadius = '4px';
+            input.style.fontSize = '16px';
+        });
+
+        const button = document.querySelector('button');
+        button.style.backgroundColor = '#007bff';
+        button.style.color = '#fff';
+        button.style.border = 'none';
+        button.style.padding = '10px 20px';
+        button.style.cursor = 'pointer';
+        button.style.borderRadius = '4px';
+        button.style.fontSize = '16px';
+
+        button.addEventListener('mouseover', () => button.style.backgroundColor = '#0056b3');
+        button.addEventListener('mouseout', () => button.style.backgroundColor = '#007bff');
+
+        function crearUsuario() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !email || !password) {
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+
+            alert(`Usuario ${username} registrado con éxito.`);
+            window.location.href = 'pagina-principal.html';
+        }
+    </script>
+</body>
+</html>

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class PublicacionServicio {
+public class PublicacionServicio implements IPublicacionServicio {
 
     private final PublicacionRepositorio publicacionRepositorio;
 

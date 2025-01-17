@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class RedSocialControlador {
     
-    @GetMapping("/redSocial")
-    public String mostrarIndex(){
-        return "redSocial";
+    @GetMapping("/registro")
+    public String registro(){
+        return "registro";
     }
-    
+
+    @GetMapping("/red_social")
+    public String redSocial(){
+        return "red_social";
+    }
+
 }
