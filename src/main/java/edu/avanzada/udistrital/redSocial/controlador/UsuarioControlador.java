@@ -5,7 +5,6 @@
 package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
-import edu.avanzada.udistrital.redSocial.repository.UsuarioRepositorio;
 import edu.avanzada.udistrital.redSocial.service.UsuarioServicio;
 import java.util.List;
 import java.util.UUID;

@@ -6,6 +6,8 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -13,15 +15,18 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class RedSocialControlador {
-    
+
     @GetMapping("/registro")
-    public String registro(){
+    public String mostrarRegistro() {
+        // Muestra la vista de registro (registro.html)
         return "registro";
     }
 
-    @GetMapping("/red_social")
-    public String redSocial(){
-        return "red_social";
+
+    @GetMapping("/pagina-principal")
+    public String mostrarPaginaPrincipal() {
+        // Muestra la vista de la página principal (pagina-principal.html)
+        return "pagina-principal";
     }
 
 }
