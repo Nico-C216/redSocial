@@ -1,0 +1,92 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 17/01/2025, 4:30:26 p. m.
+    Author     : Nicolas
+*/
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f4f6;
+}
+
+/* Estilos para las publicaciones */
+.post {
+    transition: transform 0.2s ease;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Estilos para los botones de acción */
+.action-button {
+    transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    transform: scale(1.05);
+}
+
+.action-button:active {
+    transform: scale(0.95);
+}
+
+/* Estilos para los likes */
+.liked {
+    color: #e53e3e;
+    transform: scale(1.1);
+}
+
+/* Estilos para los comentarios */
+.comments-section {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #a0aec0 #edf2f7;
+}
+
+.comments-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-section::-webkit-scrollbar-track {
+    background: #edf2f7;
+}
+
+.comments-section::-webkit-scrollbar-thumb {
+    background-color: #a0aec0;
+    border-radius: 3px;
+}
+
+/* Estilos para mensajes de error y éxito */
+.error-message {
+    color: #e53e3e;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.success-message {
+    color: #38a169;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+

@@ -5,12 +5,15 @@
 package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Publicacion;
+import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.repository.PublicacionRepositorio;
 import edu.avanzada.udistrital.redSocial.service.PublicacionServicio;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,29 +25,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controlador para gestionar los post o publicaciones en la red social
+ *
  * @author Nicolas
  */
 @RestController
 @RequestMapping("/publicaciones")
 @RequiredArgsConstructor
 public class PublicacionControlador {
-    
-    
+
     private final PublicacionServicio publicacionServicio;
-    
+
     /**
      * Obtiene todas las publicaciones
-     * @return 
+     *
+     * @return
      */
     @GetMapping
     public List<Publicacion> obtenerTodasLasPublicaciones() {
         return publicacionServicio.obtenerTodas();
     }
-    
+
     /**
      * Obtiene las publicaciones por id
+     *
      * @param id
-     * @return 
+     * @return
      */
     @GetMapping("/{id}")
     public ResponseEntity<Publicacion> obtenerPublicacionPorId(@PathVariable("id") UUID id) {
@@ -52,24 +57,31 @@ public class PublicacionControlador {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     /**
      * Crea las publicaciones
+     *
      * @param publicacion
-     * @return 
+     * @return
      */
     @PostMapping
-     public ResponseEntity<Publicacion> crearPublicacion(@RequestBody Publicacion publicacion) {
+    public ResponseEntity<Publicacion> crearPublicacion(@RequestBody Publicacion publicacion, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        publicacion.setIdUsuario(usuario.getId());
         Publicacion nuevaPublicacion = publicacionServicio.crearPublicacion(publicacion);
         return ResponseEntity.ok(nuevaPublicacion);
     }
-    
+
     /**
      * Elimina las publicaciones
+     *
      * @param id
-     * @return 
+     * @return
      */
-     @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarPublicacion(@PathVariable("id") UUID id) {
         if (!publicacionServicio.existePorId(id)) {
             return ResponseEntity.notFound().build();
@@ -77,5 +89,5 @@ public class PublicacionControlador {
         publicacionServicio.eliminarPublicacion(id);
         return ResponseEntity.noContent().build();
     }
-    
+
 }

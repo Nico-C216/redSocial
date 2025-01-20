@@ -38,6 +38,18 @@ public class UsuarioServicio implements IUsuarioServicio {
         return usuarioRepositorio.save(usuario);
     }
 
+    public boolean registrarUsuario(Usuario usuario) {
+        if (usuarioRepositorio.existsByEmail(usuario.getEmail())) {
+            return false;
+        }
+
+        usuario.setUsername(usuario.getUsername());
+        usuario.setEmail(usuario.getEmail());
+        usuario.setPassword(usuario.getPassword()); 
+        usuarioRepositorio.save(usuario);
+        return true;
+    }
+
     public Usuario actualizarUsuario(UUID id, Usuario usuario) {
         usuario.setId(id);
         return usuarioRepositorio.save(usuario);

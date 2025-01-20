@@ -6,9 +6,11 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.service.UsuarioServicio;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,12 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UsuarioControlador {
 
-    
     private final UsuarioServicio usuarioServicio;
 
     /**
      * Obtiene todos los usuarios
-     * @return 
+     *
+     * @return
      */
     @GetMapping
     public List<Usuario> obtenerTodosLosUsuarios() {
@@ -43,8 +46,9 @@ public class UsuarioControlador {
 
     /**
      * Obtiene al usuario por el id
+     *
      * @param id
-     * @return 
+     * @return
      */
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable("id") UUID id) {
@@ -55,8 +59,9 @@ public class UsuarioControlador {
 
     /**
      * Crea al usuario en la red social
+     *
      * @param usuario
-     * @return 
+     * @return
      */
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
@@ -68,10 +73,30 @@ public class UsuarioControlador {
     }
 
     /**
+     * Registra al usuario en la red social
+     *
+     *
+     * @param usuario
+     * @param session
+     * @return
+     */
+    @PostMapping("/registrar")
+    public ResponseEntity<Void> registrarUsuario(@RequestBody Usuario usuario, HttpSession session) {
+        boolean registrado;
+        registrado = usuarioServicio.registrarUsuario(usuario);
+        if (registrado) {
+            session.setAttribute("usuario", usuario); // Establece la sesión
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/red-social").build(); // Redirige al feed
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Error en el registro
+    }
+
+    /**
      * Actualiza al usuario
+     *
      * @param id
      * @param usuario
-     * @return 
+     * @return
      */
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("id") UUID id, @RequestBody Usuario usuario) {
@@ -84,8 +109,9 @@ public class UsuarioControlador {
 
     /**
      * Elimina el usuario
+     *
      * @param id
-     * @return 
+     * @return
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable("id") UUID id) {
