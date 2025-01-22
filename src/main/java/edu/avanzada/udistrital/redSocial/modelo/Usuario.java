@@ -6,9 +6,9 @@ package edu.avanzada.udistrital.redSocial.modelo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Table(name="usuarios")
 public class Usuario {
 
     @Id
@@ -32,5 +32,9 @@ public class Usuario {
     private String urlImagenPerfil;
     private LocalDateTime creacion = LocalDateTime.now();
     private LocalDateTime actualizacion = LocalDateTime.now();
+    
+    public Usuario(UUID id){
+        this.id=id;
+    }
 
 }

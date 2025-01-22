@@ -6,6 +6,7 @@ package edu.avanzada.udistrital.redSocial.modelo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -20,13 +21,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Table(name="publicaciones")
 public class Publicacion {
 
     @Id
     private UUID id = UUID.randomUUID();
     private UUID idUsuario;
+    private String contenido;
     private LocalDateTime fechaCreacion = LocalDateTime.now();
     private int cantidadMeGusta = 0;
+    
+    public Publicacion(UUID id){
+        this.id=id;
+    }
 
 }

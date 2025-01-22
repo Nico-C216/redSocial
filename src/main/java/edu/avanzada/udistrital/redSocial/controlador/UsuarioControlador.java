@@ -6,7 +6,9 @@ package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.service.UsuarioServicio;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -78,17 +80,18 @@ public class UsuarioControlador {
      *
      * @param usuario
      * @param session
-     * @return
+     * @param response
+     * @throws java.io.IOException
      */
     @PostMapping("/registrar")
-    public ResponseEntity<Void> registrarUsuario(@RequestBody Usuario usuario, HttpSession session) {
-        boolean registrado;
-        registrado = usuarioServicio.registrarUsuario(usuario);
+    public void registrarUsuario(@RequestBody Usuario usuario, HttpSession session, HttpServletResponse response) throws IOException {
+        boolean registrado = usuarioServicio.registrarUsuario(usuario);
         if (registrado) {
-            session.setAttribute("usuario", usuario); // Establece la sesión
-            return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/red-social").build(); // Redirige al feed
+            session.setAttribute("usuario", usuario); // Configurar sesión
+            response.sendRedirect("/red-social"); // Redirige directamente
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error al registrar usuario");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Error en el registro
     }
 
     /**

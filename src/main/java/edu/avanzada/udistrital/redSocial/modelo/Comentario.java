@@ -6,9 +6,9 @@ package edu.avanzada.udistrital.redSocial.modelo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Table(name="comentarios")
 public class Comentario {
 
     @Id
@@ -29,5 +29,11 @@ public class Comentario {
     private UUID idUsuario;
     private String contenido;
     private LocalDateTime fechaCreacion = LocalDateTime.now();
+    
+    
+    
+    public Comentario(UUID id){
+        this.id=id;
+    }
 
 }

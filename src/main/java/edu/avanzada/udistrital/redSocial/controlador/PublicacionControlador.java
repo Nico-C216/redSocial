@@ -41,8 +41,9 @@ public class PublicacionControlador {
      * @return
      */
     @GetMapping
-    public List<Publicacion> obtenerTodasLasPublicaciones() {
-        return publicacionServicio.obtenerTodas();
+    public ResponseEntity<List<Publicacion>> obtenerPublicaciones() {
+        List<Publicacion> publicaciones = publicacionServicio.obtenerTodas();
+        return ResponseEntity.ok(publicaciones);
     }
 
     /**
@@ -62,13 +63,17 @@ public class PublicacionControlador {
      * Crea las publicaciones
      *
      * @param publicacion
+     * @param session
      * @return
      */
     @PostMapping
     public ResponseEntity<Publicacion> crearPublicacion(@RequestBody Publicacion publicacion, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Usuario no autenticado
+        }
+        if (publicacion.getContenido() == null || publicacion.getContenido().isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Contenido vacío
         }
         publicacion.setIdUsuario(usuario.getId());
         Publicacion nuevaPublicacion = publicacionServicio.crearPublicacion(publicacion);

@@ -9,12 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(form);
-        const userData = {
-            username: formData.get('username'),
-            email: formData.get('email'),
-            password: formData.get('password'),
-            bio: formData.get('bio')
+        const formData = {
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            bio: document.getElementById('bio').value,
         };
 
         try {
@@ -23,35 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
-                        credentials: 'include',
+                body: JSON.stringify(formData),
+                credentials: 'include', // Enviar cookies para la sesión
             });
-            localStorage.setItem('user', JSON.stringify(userData));
-            window.location.href = '/red-social';
 
-            if (response.redirected) {
-                window.location.href = response.url; // Redirige automáticamente
-            } else if (!response.ok) {
+            if (!response.ok) {
                 throw new Error('Error en el registro');
             }
 
-            // Obtener el usuario recién creado para guardarlo en localStorage
-            const userResponse = await fetch(`http://localhost:8090/usuarios?email=${formData.email}`);
-            const userData = await userResponse.json();
-
-            // Guardar datos del usuario en localStorage
-            localStorage.setItem('user', JSON.stringify(userData));
-
-            // Mostrar mensaje de éxito
-            showMessage('success', '¡Registro exitoso! Redirigiendo...');
-
-            // Redireccionar a la red social después de 2 segundos
-            setTimeout(() => {
-                window.location.href = '/red-social';
-            }, 2000);
-
+            // El navegador seguirá automáticamente la redirección del backend
         } catch (error) {
-            showMessage('error', 'Error en el registro. Por favor, intenta nuevamente.');
+            showMessage('error', 'Error al conectar con el servidor.');
         }
     });
 
