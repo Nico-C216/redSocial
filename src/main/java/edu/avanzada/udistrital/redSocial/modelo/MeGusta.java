@@ -4,6 +4,7 @@
  */
 package edu.avanzada.udistrital.redSocial.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -27,6 +28,8 @@ public class MeGusta {
     @Id
     private UUID id = UUID.randomUUID();
     private UUID idPublicacion;
+    
+    @JsonIgnore
     private UUID idUsuario;
     private LocalDateTime fechaCreacion = LocalDateTime.now();
     

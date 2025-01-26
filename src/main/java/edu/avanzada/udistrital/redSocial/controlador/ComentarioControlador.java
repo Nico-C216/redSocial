@@ -64,14 +64,17 @@ public class ComentarioControlador {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Comentario> crearComentario(@RequestBody Comentario comentario, HttpSession session) {
+    public ResponseEntity<?> crearComentario(@RequestBody Comentario comentario, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Usuario no autenticado.");
         }
+
+        // Asignar el ID del usuario autenticado
         comentario.setIdUsuario(usuario.getId());
-        Comentario nuevoComentario = comentarioServicio.crearComentario(comentario);
-        return ResponseEntity.ok(nuevoComentario);
+        comentarioServicio.crearComentario(comentario);
+        return ResponseEntity.ok("Comentario agregado.");
     }
 
     /**

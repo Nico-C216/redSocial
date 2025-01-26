@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class PublicacionServicio implements IPublicacionServicio {
 
     private final PublicacionRepositorio publicacionRepositorio;
+    
 
     public List<Publicacion> obtenerTodas() {
         return publicacionRepositorio.findAll();
@@ -32,6 +33,11 @@ public class PublicacionServicio implements IPublicacionServicio {
     }
 
     public Publicacion crearPublicacion(Publicacion publicacion) {
+        // En vez de un log, agrega validación explícita
+        if (publicacion.getContenido() == null || publicacion.getContenido().isEmpty()) {
+            throw new IllegalArgumentException("El contenido de la publicación no puede estar vacío.");
+        }
+
         publicacion.setFechaCreacion(LocalDateTime.now());
         return publicacionRepositorio.save(publicacion);
     }

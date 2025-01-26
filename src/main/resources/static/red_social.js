@@ -22,9 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadPosts() {
         try {
             const response = await fetch('http://localhost:8090/publicaciones', {
-                method: 'GET',
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    contenido: content,
+                    fechaCreacion: new Date().toISOString(),
+                }),
                 credentials: 'include',
             });
+
             if (!response.ok)
                 throw new Error('Error al cargar publicaciones');
 
@@ -51,44 +57,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const postElement = document.createElement('div');
         postElement.className = 'bg-white rounded-lg shadow-md p-6 mb-4 fade-in';
         postElement.innerHTML = `
-            <div class="flex items-center mb-4">
-                <img src="${post.urlImagenPerfil || `https://ui-avatars.com/api/?name=${post.username}`}" 
-                     alt="Avatar" 
-                     class="w-10 h-10 rounded-full mr-3">
-                <div>
-                    <h3 class="font-semibold">${post.username || 'Usuario'}</h3>
-                    <p class="text-gray-500 text-sm">${new Date(post.fechaCreacion).toLocaleString()}</p>
-                </div>
+        <div class="flex items-center mb-4">
+            <img src="${post.urlImagenPerfil || `https://ui-avatars.com/api/?name=${post.autor}`}" 
+                 alt="Avatar" 
+                 class="w-10 h-10 rounded-full mr-3">
+            <div>
+                <h3 class="font-semibold">Autor: ${post.autor || 'Usuario desconocido'}</h3>
+                <p class="text-gray-500 text-sm">${new Date(post.fechaCreacion).toLocaleString()}</p>
             </div>
-            <p class="text-gray-800 mb-4">${post.contenido || ''}</p>
-            <div class="flex items-center space-x-4">
-                <button class="action-button flex items-center space-x-2 ${post.liked ? 'text-red-500' : 'text-gray-500'}" 
-                        onclick="handleLike('${post.id}')">
-                    <i class="fas fa-heart"></i>
-                    <span>${post.likes?.length || 0}</span>
-                </button>
-                <button class="action-button flex items-center space-x-2 text-gray-500"
-                        onclick="toggleComments('${post.id}')">
-                    <i class="fas fa-comment"></i>
-                    <span>${post.comments?.length || 0} Comentarios</span>
-                </button>
-            </div>
-            <div id="comments-${post.id}" class="comments-section hidden mt-4">
-                <form onsubmit="handleComment(event, '${post.id}')" class="mb-4">
-                    <textarea
-                        class="w-full p-2 border rounded-lg resize-none focus:ring-2 focus:ring-purple-500"
-                        placeholder="Escribe un comentario..."
-                        rows="2"
-                    ></textarea>
-                    <button type="submit" class="mt-2 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
-                        Comentar
-                    </button>
-                </form>
-                <div class="comments-list space-y-2">
-                    ${renderComments(post.comments)}
-                </div>
-            </div>
-        `;
+        </div>
+        <p class="text-gray-800 mb-4">${post.contenido || ''}</p>
+        <div class="flex items-center space-x-4">
+            <button class="action-button flex items-center space-x-2 text-gray-500" 
+                    onclick="handleLike('${post.id}')">
+                <i class="fas fa-heart"></i>
+                <span>${post.cantidadMeGusta || 0}</span>
+            </button>
+            <button class="action-button flex items-center space-x-2 text-gray-500"
+                    onclick="toggleComments('${post.id}')">
+                <i class="fas fa-comment"></i>
+                <span>Comentarios</span>
+            </button>
+        </div>
+    `;
         postsFeed.appendChild(postElement);
     }
 
@@ -109,36 +100,33 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const content = document.getElementById('postContent').value.trim();
 
-        if (!content)
+        if (!content) {
+            showMessage('error', 'El contenido de la publicación no puede estar vacío.');
             return;
+        }
+
+        const payload = {contenido: content}; // JSON sin idUsuario
+        console.log('Datos enviados al servidor:', payload);
 
         try {
-            const user = JSON.parse(localStorage.getItem('user')); // Asegúrate de que 'user' tenga un UUID válido
-            if (!user || !user.id) {
-                throw new Error('Usuario no autenticado o ID de usuario inválido');
-            }
-
             const response = await fetch('http://localhost:8090/publicaciones', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    idUsuario: user.id, // El ID debe ser un UUID válido
-                    contenido: content,
-                    fechaCreacion: new Date().toISOString(),
-                }),
+                body: JSON.stringify(payload),
+                credentials: 'include',
             });
 
-            if (!response.ok)
+            if (!response.ok) {
                 throw new Error('Error al crear la publicación');
+            }
 
-            document.getElementById('postContent').value = '';
-            showMessage('success', 'Publicación creada exitosamente');
+            showMessage('success', '¡Publicación creada!');
             loadPosts();
         } catch (error) {
-            console.error('Error:', error);
-            showMessage('error', 'Error al crear la publicación');
+            console.error('Error al crear publicación:', error);
+            showMessage('error', 'No se pudo crear la publicación.');
         }
     });
 
@@ -156,9 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }),
             });
 
-            if (!response.ok)
+            if (!response.ok) {
                 throw new Error('Error al dar me gusta');
-            loadPosts();
+            }
+
+            // Recargar todas las publicaciones
+            await loadPosts();
+            showMessage('success', '¡Me gusta agregado!');
         } catch (error) {
             console.error('Error al dar me gusta:', error);
             showMessage('error', 'No se pudo dar me gusta.');
@@ -188,17 +180,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }),
             });
 
-            if (!response.ok)
-                throw new Error('Error al comentar');
+            if (!response.ok) {
+                throw new Error('Error al agregar comentario');
+            }
 
+            // Recargar todas las publicaciones
+            await loadPosts();
             e.target.querySelector('textarea').value = '';
             showMessage('success', '¡Comentario agregado!');
-            loadPosts();
         } catch (error) {
             console.error('Error al agregar comentario:', error);
             showMessage('error', 'No se pudo agregar el comentario.');
         }
     };
+    
 
     // Alternar visibilidad de comentarios
     window.toggleComments = (postId) => {

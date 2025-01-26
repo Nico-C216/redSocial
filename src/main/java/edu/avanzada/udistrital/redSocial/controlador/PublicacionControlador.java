@@ -67,17 +67,25 @@ public class PublicacionControlador {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Publicacion> crearPublicacion(@RequestBody Publicacion publicacion, HttpSession session) {
+    public ResponseEntity<?> crearPublicacion(@RequestBody Publicacion publicacion, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Usuario no autenticado
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Usuario no autenticado.");
         }
-        if (publicacion.getContenido() == null || publicacion.getContenido().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Contenido vacío
-        }
+
+        // Asignar el usuario autenticado a la publicación
         publicacion.setIdUsuario(usuario.getId());
+
+        // Validar contenido
+        if (publicacion.getContenido() == null || publicacion.getContenido().isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("El contenido de la publicación no puede estar vacío.");
+        }
+
+        // Guardar publicación
         Publicacion nuevaPublicacion = publicacionServicio.crearPublicacion(publicacion);
-        return ResponseEntity.ok(nuevaPublicacion);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPublicacion);
     }
 
     /**
