@@ -4,14 +4,20 @@
  */
 package edu.avanzada.udistrital.redSocial.controlador;
 
+import edu.avanzada.udistrital.redSocial.modelo.Comentario;
 import edu.avanzada.udistrital.redSocial.modelo.Publicacion;
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.repository.PublicacionRepositorio;
+import edu.avanzada.udistrital.redSocial.service.ComentarioServicio;
+import edu.avanzada.udistrital.redSocial.service.MeGustaServicio;
 import edu.avanzada.udistrital.redSocial.service.PublicacionServicio;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PublicacionControlador {
 
     private final PublicacionServicio publicacionServicio;
+    private final ComentarioServicio comentarioServicio;
+    private final MeGustaServicio meGustaServicio;
 
     /**
      * Obtiene todas las publicaciones
@@ -41,9 +49,28 @@ public class PublicacionControlador {
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<Publicacion>> obtenerPublicaciones() {
+    public ResponseEntity<List<Map<String, Object>>> obtenerPublicaciones() {
         List<Publicacion> publicaciones = publicacionServicio.obtenerTodas();
-        return ResponseEntity.ok(publicaciones);
+
+        List<Map<String, Object>> publicacionesEnriquecidas = publicaciones.stream().map(pub -> {
+            Map<String, Object> publicacionData = new HashMap<>();
+            publicacionData.put("id", pub.getId());
+            publicacionData.put("contenido", pub.getContenido());
+            publicacionData.put("fechaCreacion", pub.getFechaCreacion());
+
+            // Obtener y actualizar la cantidad de "me gusta"
+            int cantidadMeGusta = meGustaServicio.obtenerPorPublicacion(pub.getId()).size();
+            publicacionData.put("cantidadMeGusta", cantidadMeGusta);
+
+            // Obtener y agregar comentarios
+            List<Comentario> comentarios = comentarioServicio.obtenerPorPublicacion(pub.getId());
+            System.out.println("[DEBUG] Comentarios de Publicación " + pub.getId() + ": " + comentarios);
+
+            publicacionData.put("comentarios", comentarios);
+            return publicacionData;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(publicacionesEnriquecidas);
     }
 
     /**

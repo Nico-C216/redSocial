@@ -5,9 +5,11 @@
 package edu.avanzada.udistrital.redSocial.controlador;
 
 import edu.avanzada.udistrital.redSocial.modelo.MeGusta;
+import edu.avanzada.udistrital.redSocial.modelo.Publicacion;
 import edu.avanzada.udistrital.redSocial.modelo.Usuario;
 import edu.avanzada.udistrital.redSocial.repository.MeGustaRepositorio;
 import edu.avanzada.udistrital.redSocial.service.MeGustaServicio;
+import edu.avanzada.udistrital.redSocial.service.PublicacionServicio;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeGustaControlador {
 
     private final MeGustaServicio meGustaServicio;
-    
+    private final PublicacionServicio publicacionServicio;
 
     @GetMapping("/publicacion/{idPublicacion}")
     public List<MeGusta> obtenerMeGustasPorPublicacion(@PathVariable("idPublicacion") UUID idPublicacion) {
@@ -45,14 +47,22 @@ public class MeGustaControlador {
     public ResponseEntity<?> crearMeGusta(@RequestBody MeGusta meGusta, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Usuario no autenticado.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado.");
         }
 
         // Asignar el ID del usuario autenticado
         meGusta.setIdUsuario(usuario.getId());
+        System.out.println("[DEBUG] Me gusta recibido: " + meGusta);
+
         meGustaServicio.crearMeGusta(meGusta);
-        return ResponseEntity.ok("Me gusta agregado.");
+
+        // Retornar publicación actualizada
+        Publicacion publicacionActualizada = publicacionServicio.obtenerPorId(meGusta.getIdPublicacion()).orElseThrow();
+        publicacionActualizada.setCantidadMeGusta(
+                meGustaServicio.obtenerPorPublicacion(meGusta.getIdPublicacion()).size()
+        );
+
+        return ResponseEntity.ok(publicacionActualizada);
     }
 
     @DeleteMapping("/{id}")

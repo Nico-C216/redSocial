@@ -7,7 +7,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Feed - Red Social</title>
+        <title>Feed - Cachondeo</title>
         <link rel="stylesheet" href="red_social.css">
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <div class="max-w-6xl mx-auto px-4">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="#" class="text-xl font-bold">Red Social</a>
+                        <a href="#" class="text-xl font-bold">CachondeoNet</a>
                     </div>
                     <div class="flex items-center space-x-4">
                         <a href="#" id="profileLink" class="hover:text-gray-200">
@@ -53,6 +53,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             <!-- Feed de Publicaciones -->
             <div id="postsFeed" class="space-y-6">
+                <p id="loadingMessage" class="text-gray-500 text-center">Cargando publicaciones...</p>
                 <!-- Las publicaciones se cargarán aquí dinámicamente -->
             </div>
         </main>
@@ -69,6 +70,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
         </template>
 
-        <script src="feed.js"></script>
+        <!-- Asegurar que el script se ejecute después de cargar el DOM -->
+        <script src="red_social.js" defer></script>
     </body>
 </html>
