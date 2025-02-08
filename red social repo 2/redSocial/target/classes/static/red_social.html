@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Red social</title>
+        <link rel="stylesheet" href="red_social.css">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-gray-100">
+        <!-- Navbar -->
+        <nav class="bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-lg fixed w-full top-0 z-50">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="#" class="text-xl font-bold">sat</a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="#" id="profileLink" class="hover:text-gray-200">
+                            <i class="fas fa-user"></i> Perfil
+                        </a>
+                        <button id="logoutBtn" class="bg-white text-purple-600 px-4 py-2 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <main class="container mx-auto px-4 pt-20 pb-8">
+            <!-- Crear Publicación -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <form id="createPostForm">
+                    <textarea
+                        id="postContent"
+                        placeholder="¿Qué estás pensando?"
+                        class="w-full p-4 border rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        rows="3"
+                        ></textarea>
+                    <div class="mt-4 flex justify-end">
+                        <button type="submit" class="bg-gradient-to-r from-purple-600 to-blue-500 text-white px-6 py-2 rounded-md hover:from-purple-700 hover:to-blue-600">
+                            <i class="fas fa-paper-plane mr-2"></i> Publicar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Feed de Publicaciones -->
+            <div id="postsFeed" class="space-y-6">
+                <p id="loadingMessage" class="text-gray-500 text-center">Cargando publicaciones...</p>
+                <!-- Las publicaciones se cargarán aquí dinámicamente -->
+            </div>
+        </main>
+
+        <!-- Template para Comentarios -->
+        <template id="commentTemplate">
+            <div class="comment bg-gray-50 p-3 rounded-lg mt-2">
+                <div class="flex items-start space-x-3">
+                    <div class="flex-1">
+                        <p class="font-medium text-sm"></p>
+                        <p class="text-gray-600 text-sm mt-1"></p>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Asegurar que el script se ejecute después de cargar el DOM -->
+        <script src="red_social.js" defer></script>
+    </body>
+</html>
