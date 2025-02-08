@@ -25,11 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(formData),
                 credentials: 'include', // Enviar cookies para la sesión
             });
-
+            
+            const result = await response.json();
+            
             if (!response.ok) {
                 throw new Error('Error en el registro');
             }
-
+            window.location.href = result.redirectUrl;
             // El navegador seguirá automáticamente la redirección del backend
         } catch (error) {
             showMessage('error', 'Error al conectar con el servidor.');

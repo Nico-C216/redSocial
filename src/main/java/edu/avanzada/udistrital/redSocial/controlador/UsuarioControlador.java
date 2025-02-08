@@ -9,7 +9,9 @@ import edu.avanzada.udistrital.redSocial.service.UsuarioServicio;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,16 +86,45 @@ public class UsuarioControlador {
      * @throws java.io.IOException
      */
     @PostMapping("/registrar")
-    public void registrarUsuario(@RequestBody Usuario usuario, HttpSession session, HttpServletResponse response) throws IOException {
+    public ResponseEntity<Map<String, String>> registrarUsuario(@RequestBody Usuario usuario, HttpSession session) {
         boolean registrado = usuarioServicio.registrarUsuario(usuario);
         if (registrado) {
-            session.setAttribute("usuario", usuario); // Configurar sesión
-            response.sendRedirect("/red-social"); // Redirige directamente
+            session.setAttribute("usuario", usuario); // Guardar usuario en sesión
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Registro exitoso");
+            response.put("redirectUrl", "/login.html"); // URL a la que debe redirigir
+
+            return ResponseEntity.ok(response);
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error al registrar usuario");
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al registrar usuario"));
         }
     }
+    /**
+     * Logea al usuario en la red social
+     *
+     *
+     * @param usuario
+     * @param session
+     * @param response
+     * @throws java.io.IOException
+     */
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> loginUsuario(@RequestBody Usuario usuario, HttpSession session) {
+        boolean registrado = usuarioServicio.registrarUsuario(usuario);
+        if (registrado) {
+            session.setAttribute("usuario", usuario); // Guardar usuario en sesión
 
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Inicio de sesión exitoso");
+            response.put("redirectUrl", "/login.html"); // URL a la que debe redirigir
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error al iniciar sesión del usuario"));
+        }
+    }
+    
     /**
      * Actualiza al usuario
      *

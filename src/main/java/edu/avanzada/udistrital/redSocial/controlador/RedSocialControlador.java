@@ -20,45 +20,45 @@ public class RedSocialControlador {
     @GetMapping("/")
     public String index(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
-            return "redirect:/registro";
+            return "redirect:/registro.html";
         }
-        return "redirect:/red-social";
+        return "redirect:/red-social.html";
     }
 
     // Página de registro
     @GetMapping("/registro")
     public String registro(HttpSession session) {
         if (session.getAttribute("usuario") != null) {
-            return "redirect:/red-social";
+            return "redirect:/red-social.html";
         }
-        return "registro";
+        return "registro.html";
     }
 
     // Página principal de la red social
     @GetMapping("/red-social")
     public String redSocial(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
-            return "redirect:/registro";
+            return "redirect:/registro.html";
         }
-        return "red_social";
+        return "red_social.html";
     }
 
     // Página de perfil
     @GetMapping("/perfil")
     public String perfil(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
-            return "redirect:/registro";
+            return "redirect:/registro.html";
         }
-        return "perfil";
+        return "perfil.html";
     }
 
     // Página de perfil de otro usuario
     @GetMapping("/perfil/{username}")
     public String perfilUsuario(@PathVariable String username, HttpSession session) {
         if (session.getAttribute("usuario") == null) {
-            return "redirect:/registro";
+            return "redirect:/registro.html";
         }
-        return "perfil";
+        return "perfil.html";
     }
 
 }
