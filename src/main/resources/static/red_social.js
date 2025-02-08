@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificar autenticación
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user) {
-        window.location.href = '/registro';
+        window.location.href = '/registro.html';
         return;
     }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok)
-                throw new Error('Error al cargar publicaciones');
+                throw new Error(`Error ${response.status}: No se pudieron cargar las publicaciones`);
 
             const posts = await response.json();
             console.log("[DEBUG] Loaded posts from API:", posts);  // 🔥 Log fetched posts
@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPosts(posts);
         } catch (error) {
             console.error('[ERROR] Error loading posts:', error);
+            postsFeed.innerHTML = '<p class="text-red-500 text-center">Error al cargar publicaciones.</p>';
         }
     }
 
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('user');
-        window.location.href = '/registro';
+        window.location.href = '/registro.html';
     });
 
     function showMessage(type, text) {

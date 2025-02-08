@@ -4,13 +4,15 @@
  */
 package edu.avanzada.udistrital.redSocial.service;
 
-import edu.avanzada.udistrital.redSocial.modelo.Usuario;
-import edu.avanzada.udistrital.redSocial.repository.UsuarioRepositorio;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
+import edu.avanzada.udistrital.redSocial.modelo.Usuario;
+import edu.avanzada.udistrital.redSocial.repository.UsuarioRepositorio;
+import lombok.RequiredArgsConstructor;
 
 /**
  *
@@ -45,7 +47,7 @@ public class UsuarioServicio implements IUsuarioServicio {
 
         usuario.setUsername(usuario.getUsername());
         usuario.setEmail(usuario.getEmail());
-        usuario.setPassword(usuario.getPassword()); 
+        usuario.setPassword(usuario.getPassword());
         usuarioRepositorio.save(usuario);
         return true;
     }
@@ -58,5 +60,9 @@ public class UsuarioServicio implements IUsuarioServicio {
     public void eliminarUsuario(UUID id) {
         usuarioRepositorio.deleteById(id);
     }
+
+    public Optional<Usuario> validarCredenciales(String email, String password) { //Optional maneja valores presentes o ausentes
+        return usuarioRepositorio.findByEmail(email).filter(usuario -> usuario.getPassword().equals(password)); //verifica la contraseña en la base de datos sin seguiridad
+    } //envia Optional(usuario), si existe optional contiene el usuario si no es Optional.empty
 
 }
