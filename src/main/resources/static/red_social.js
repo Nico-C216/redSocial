@@ -2,10 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Verificar autenticación
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) {
+    try {
+        const response = await fetch('http://localhost:8090/usuarios/session', {
+            credentials: 'include'
+        });
+
+        if (!response.ok)
+            throw new Error("No autenticado");
+    } catch (error) {
         window.location.href = '/registro.html';
         return;
     }
@@ -39,8 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderPosts(posts) {
-        console.log("[DEBUG] Rendering posts:", posts);  // 🔥 Log post rendering
-
+        console.log("[DEBUG] Rendering posts:", posts);
         postsFeed.innerHTML = posts.length === 0
                 ? '<p class="text-gray-500 text-center">No hay publicaciones aún.</p>'
                 : '';
@@ -68,18 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span id="comment-count-${post.id}">${post.comentarios ? post.comentarios.length : 0} Comentarios</span>
                 </button>
             </div>
-            <div id="comments-${post.id}" class="hidden"></div>
+            <div id="comments-${post.id}" class="hidden mt-4">
+                <div id="comment-list-${post.id}"></div>
+                <form onsubmit="handleComment(event, '${post.id}')" class="mt-2">
+                    <input type="text" id="comment-input-${post.id}" placeholder="Escribe un comentario..." class="border p-2 w-full" />
+                    <button type="submit" class="bg-blue-500 text-white p-2 mt-2">Enviar</button>
+                </form>
+            </div>
         `;
 
             postsFeed.appendChild(postElement);
 
-            console.log("[DEBUG] Calling renderComments() for post:", post.id, "with comments:", post.comentarios);
-            renderComments(post.id, post.comentarios);
+            if (post.comentarios) {
+                renderComments(post.id, post.comentarios);
+            }
         });
     }
 
     //Funcion de me gusta
     async function handleLike(postId) {
+        console.log("[DEBUG] handleLike called with postId:", postId);
         try {
             const response = await fetch('http://localhost:8090/me-gusta', {
                 method: 'POST',
@@ -87,11 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 credentials: 'include',
                 body: JSON.stringify({idPublicacion: postId}),
             });
-
+            console.log("[DEBUG] Server response status:", response.status);
             if (!response.ok)
                 throw new Error('Error al dar me gusta');
-
-            await loadPosts(); // Recargar todas las publicaciones
+            await loadPosts(); // Reload posts to update UI
         } catch (error) {
             console.error('Error al dar me gusta:', error);
         }
@@ -107,12 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleComment(e, postId) {
         e.preventDefault();
         const textarea = document.getElementById(`comment-input-${postId}`);
-
         if (!textarea || !textarea.value.trim()) {
             console.error('[ERROR] Comment content is empty.');
             return;
         }
-
         try {
             const response = await fetch('http://localhost:8090/comentarios', {
                 method: 'POST',
@@ -124,10 +134,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok)
                 throw new Error('Error adding comment');
 
-            textarea.value = ''; // Clear input
+            const newComment = await response.json(); // Assuming the backend returns the new comment
+            const commentList = document.getElementById(`comment-list-${postId}`);
+            if (!commentList)
+                return;
 
-            // 🔥 Instead of reloading all posts, just fetch the updated post
-            toggleComments(postId);
+            // Add the new comment to the UI
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment bg-gray-50 p-3 rounded-lg mt-2';
+            commentElement.innerHTML = `
+            <p class="font-medium text-sm">Usuario</p>
+            <p class="text-gray-600 text-sm mt-1">${newComment.contenido}</p>
+        `;
+            commentList.appendChild(commentElement);
+
+            // Clear input field
+            textarea.value = '';
+
+            // Update comment count
+            const commentCountSpan = document.getElementById(`comment-count-${postId}`);
+            const currentCount = parseInt(commentCountSpan.textContent) || 0;
+            commentCountSpan.textContent = `${currentCount + 1} Comentarios`;
         } catch (error) {
             console.error('[ERROR] Error adding comment:', error);
         }
@@ -136,22 +163,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderComments(postId, comments) {
         console.log(`[DEBUG] Rendering comments for post ${postId}:`, comments);
-
-        const commentsContainer = document.getElementById(`comments-${postId}`);
-        if (!commentsContainer) {
-            console.error('[ERROR] Comments container not found for post:', postId);
+        const commentList = document.getElementById(`comment-list-${postId}`);
+        if (!commentList) {
+            console.error('[ERROR] Comment list container not found for post:', postId);
             return;
         }
-
-        commentsContainer.innerHTML = '';
-
+        commentList.innerHTML = '';
         if (!comments || comments.length === 0) {
-            commentsContainer.innerHTML = '<p class="text-gray-500 text-sm">No hay comentarios aún.</p>';
+            commentList.innerHTML = '<p class="text-gray-500 text-sm">No hay comentarios aún.</p>';
             return;
         }
-
         comments.forEach(comment => {
-            console.log(`[DEBUG] Rendering comment:`, comment);
+            if (!comment || !comment.contenido) {
+                console.error('[ERROR] Invalid comment data:', comment);
+                return;
+            }
 
             const commentElement = document.createElement('div');
             commentElement.className = 'comment bg-gray-50 p-3 rounded-lg mt-2';
@@ -159,11 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-medium text-sm">Usuario</p>
             <p class="text-gray-600 text-sm mt-1">${comment.contenido}</p>
         `;
-            commentsContainer.appendChild(commentElement);
+            commentList.appendChild(commentElement);
         });
-
-        document.getElementById(`comment-count-${postId}`).textContent = `${comments.length} Comentarios`;
-        commentsContainer.classList.remove('hidden'); // Show comments
     }
 
 
@@ -198,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         commentsContainer.classList.toggle('hidden');
     }
 
+    //Crea una publicacion
     createPostForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const content = document.getElementById('postContent').value.trim();
@@ -207,19 +231,33 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        console.log("[DEBUG] Sending request to backend...");
+        console.log("[DEBUG] Post content:", content);
+
         try {
             const response = await fetch('http://localhost:8090/publicaciones', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 credentials: 'include',
                 body: JSON.stringify({contenido: content}),
             });
 
-            if (!response.ok)
+            console.log("[DEBUG] Server response status:", response.status);
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                console.error("[ERROR] Backend response:", errorMessage);
                 throw new Error('Error al crear la publicación');
+            }
+
+            const result = await response.json();
+            console.log("[DEBUG] Server response data:", result);
 
             showMessage('success', '¡Publicación creada!');
-            loadPosts();
+            document.getElementById('postContent').value = "";  // Clear input
+            loadPosts(); // Reload posts
         } catch (error) {
             console.error('Error al crear publicación:', error);
             showMessage('error', 'No se pudo crear la publicación.');
@@ -239,5 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => message.remove(), 3000);
     }
+
+    window.handleLike = handleLike;
+    window.toggleComments = toggleComments;
+    window.handleComment = handleComment;
 });
 

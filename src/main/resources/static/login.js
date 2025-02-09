@@ -1,3 +1,7 @@
+/* 
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
 
@@ -5,12 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const formData = {
-            email: document.getElementById('email').value,
+            username: document.getElementById('username').value,
             password: document.getElementById('password').value,
         };
-
+        //depuracion
+        console.log("Datos enviados:", JSON.stringify(formData));
+        
         try {
-            const response = await fetch('http://localhost:8090/usuarios/login', { 
+            const response = await fetch('http://localhost:8090/usuarios/login2', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -18,13 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(formData),
                 credentials: 'include', // Enviar cookies para la sesión
             });
-            
+
             const result = await response.json();
+            //depuracion
+            console.log("Estado HTTP:", response.status);
+            console.log("Respuesta del servidor:", result);
             
             if (!response.ok) {
-                throw new Error('Credenciales incorrectas');
+                throw new Error('Credenciales incorrectas error 1');
             }
             if (result.redirectUrl) {
+                //depuracion
+                console.log("Redirigiendo a:", result.redirectUrl);
+                
                 window.location.href = result.redirectUrl;
             }
             // El navegador seguirá automáticamente la redirección del backend
@@ -51,3 +63,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 });
+

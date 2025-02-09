@@ -61,8 +61,11 @@ public class UsuarioServicio implements IUsuarioServicio {
         usuarioRepositorio.deleteById(id);
     }
 
-    public Optional<Usuario> validarCredenciales(String email, String password) { //Optional maneja valores presentes o ausentes
-        return usuarioRepositorio.findByEmail(email).filter(usuario -> usuario.getPassword().equals(password)); //verifica la contraseña en la base de datos sin seguiridad
+    public Optional<Usuario> validarCredenciales(String username, String password) { //Optional maneja valores presentes o ausentes
+        return usuarioRepositorio.findByUsername(username).filter(usuario -> usuario.getPassword().equals(password)); //verifica la contraseña en la base de datos sin seguiridad
     } //envia Optional(usuario), si existe optional contiene el usuario si no es Optional.empty
-
+    
+    public Usuario autenticarUsuario(String username, String password) {
+        return usuarioRepositorio.findByUsername(username).filter(usuario -> usuario.getPassword().equals(password)).orElse(null);
+    }
 }
