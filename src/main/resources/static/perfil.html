@@ -3,72 +3,24 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Usuario</title>
-</head>
-<body>
-    <div id="app">
-        <h1>Perfil de Usuario</h1>
-        <div id="perfil">
-            <!-- Aquí se cargará la información del usuario -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Perfil</title>
+        <link rel="stylesheet" href="perfil.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Perfil de Usuario</h1>
+            <div class="profile-card">
+                <img id="profile-pic" src="" alt="Foto de perfil">
+                <p><strong>Nombre:</strong> <span id="user-name"></span></p>
+                <p><strong>Correo:</strong> <span id="user-email"></span></p>
+                <p><strong>Usuario:</strong> <span id="user-username"></span></p>
+            </div>
+            <button id="backBtn">Volver</button>
         </div>
-        <button onclick="volverAlInicio()">Volver al Inicio</button>
-    </div>
-
-    <script>
-        // Estilizar la página dinámicamente
-        const app = document.getElementById('app');
-        app.style.maxWidth = '500px';
-        app.style.margin = '50px auto';
-        app.style.padding = '20px';
-        app.style.border = '1px solid #ccc';
-        app.style.borderRadius = '8px';
-        app.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-        app.style.textAlign = 'center';
-        app.style.fontFamily = 'Arial, sans-serif';
-
-        const boton = document.querySelector('button');
-        boton.style.backgroundColor = '#007bff';
-        boton.style.color = '#fff';
-        boton.style.border = 'none';
-        boton.style.padding = '10px 20px';
-        boton.style.cursor = 'pointer';
-        boton.style.borderRadius = '4px';
-        boton.style.fontSize = '16px';
-        boton.style.marginTop = '20px';
-
-        boton.addEventListener('mouseover', () => boton.style.backgroundColor = '#0056b3');
-        boton.addEventListener('mouseout', () => boton.style.backgroundColor = '#007bff');
-
-        // Simular datos del usuario
-        const usuario = {
-            nombre: 'Juan Pérez',
-            correo: 'juan.perez@example.com',
-            biografia: 'Desarrollador entusiasta y amante del café. 🚀'
-        };
-
-        // Cargar información del perfil
-        const perfilDiv = document.getElementById('perfil');
-        perfilDiv.style.textAlign = 'left';
-        perfilDiv.style.marginTop = '20px';
-        perfilDiv.style.padding = '15px';
-        perfilDiv.style.border = '1px solid #ddd';
-        perfilDiv.style.borderRadius = '4px';
-        perfilDiv.style.backgroundColor = '#f9f9f9';
-
-        perfilDiv.innerHTML = `
-            <p><strong>Nombre:</strong> ${usuario.nombre}</p>
-            <p><strong>Correo:</strong> ${usuario.correo}</p>
-            <p><strong>Biografía:</strong> ${usuario.biografia}</p>
-        `;
-
-        // Función para volver al inicio
-        function volverAlInicio() {
-            window.location.href = 'pagina-principal.html';
-        }
-    </script>
-</body>
+        <script src="perfil.js"></script>
+    </body>
 </html>
