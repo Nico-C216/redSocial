@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.removeItem('user');
         window.location.href = '/registro.html';
     });
-    
+
     const profileLink = document.getElementById('profileLink');
     if (profileLink) {
         profileLink.addEventListener('click', (e) => {
