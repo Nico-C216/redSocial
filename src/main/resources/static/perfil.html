@@ -3,21 +3,24 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html lang="en">
+<html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Perfil</title>
+        <title>Perfil - Red Social</title>
         <link rel="stylesheet" href="perfil.css">
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body>
-        <div class="container">
-            <h1>Perfil de Usuario</h1>
+    <body class="bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center min-h-screen">
+        <div class="profile-container">
+            <h2>Perfil de Usuario</h2>
             <div class="profile-card">
+                <!-- Se muestra la imagen o, en su defecto, un contenedor con texto -->
                 <img id="profile-pic" src="" alt="Foto de perfil">
                 <p><strong>Nombre:</strong> <span id="user-name"></span></p>
                 <p><strong>Correo:</strong> <span id="user-email"></span></p>
-                <p><strong>Usuario:</strong> <span id="user-username"></span></p>
+                <p><strong>Biografía:</strong> <span id="user-bio"></span></p>
+                <p><strong>Contraseña:</strong> <span id="user-password" class="hidden-password">******</span></p>
             </div>
             <button id="backBtn">Volver</button>
         </div>

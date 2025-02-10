@@ -272,6 +272,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.removeItem('user');
         window.location.href = '/registro.html';
     });
+    
+    const profileLink = document.getElementById('profileLink');
+    if (profileLink) {
+        profileLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'perfil.html'; // or '/perfil' depending on your routing
+        });
+    }
+
 
     function showMessage(type, text) {
         const message = document.createElement('div');
