@@ -270,9 +270,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('user');
-        window.location.href = '/registro.html';
+        window.location.href = '/login.html';
     });
-
+    
     const profileLink = document.getElementById('profileLink');
     if (profileLink) {
         profileLink.addEventListener('click', (e) => {
