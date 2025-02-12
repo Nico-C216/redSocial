@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
  */
 /* global comment */
-
 document.addEventListener('DOMContentLoaded', async () => {
     // Verificar autenticación
     let currentUser;
@@ -58,6 +57,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Si la API no incluye el autor, usamos currentUser.username
             const autorDisplay = post.autor ? post.autor : currentUser.username;
 
+            const isLiked = window.likedPosts[post.id] ? true : false;
+            const likeIcon = isLiked
+                    ? '<i class="fas fa-arrow-up"></i>'  // Up arrow indicates the post is liked
+                    : '<i class="fas fa-arrow-down"></i>'; // Down arrow indicates the post is not liked
+
             postElement.innerHTML = `
                 <div class="flex items-center mb-4">
                     <h3 class="font-semibold">Autor: ${autorDisplay}</h3>
@@ -66,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p class="text-gray-800 mb-4">${post.contenido}</p>
                 <div class="flex items-center space-x-4">
                     <button class="action-button flex items-center space-x-2 text-gray-500" onclick="handleLike('${post.id}')">
-                        <i class="fas fa-heart"></i>
+                        ${likeIcon}
                         <span id="likes-${post.id}">${post.cantidadMeGusta || 0}</span>
                     </button>
                     <button class="action-button flex items-center space-x-2 text-gray-500" onclick="toggleComments('${post.id}')">
@@ -82,7 +86,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </form>
                 </div>
             `;
-
             postsFeed.appendChild(postElement);
 
             if (post.comentarios) {
@@ -93,6 +96,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     //Funcion de me gusta
     async function handleLike(postId) {
+        if (window.likedPosts[postId]) {
+            showMessage('error', 'Ya le diste like a esta publicación');
+            return;
+        }
+
         console.log("[DEBUG] handleLike called with postId:", postId);
         try {
             const response = await fetch('http://localhost:8090/me-gusta', {
@@ -104,6 +112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log("[DEBUG] Server response status:", response.status);
             if (!response.ok)
                 throw new Error('Error al dar me gusta');
+
+            // Mark this post as liked so that subsequent clicks are ignored
+            window.likedPosts[postId] = true;
+
             await loadPosts(); // Reload posts to update UI
         } catch (error) {
             console.error('Error al dar me gusta:', error);
@@ -294,5 +306,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.handleLike = handleLike;
     window.toggleComments = toggleComments;
     window.handleComment = handleComment;
+    window.likedPosts = {};
+    window.likedPosts = window.likedPosts || {};
 });
 
