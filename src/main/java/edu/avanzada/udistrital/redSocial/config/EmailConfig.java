@@ -24,25 +24,23 @@ public class EmailConfig {
     //CAMBIAR SETUSERNAME Y SETPASSWORD PARA QUE SE TOMEN DE PROPERTIES
     @Bean
     public JavaMailSender getJavaMailSender(){
-    
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        
+
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
         mailSender.setUsername("jfwilchesg@gmail.com"); 
-        mailSender.setPassword("szop elds lxlw duob");
-        
-        Properties props= mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol","smtp");
+        mailSender.setPassword("djhy cviq emdu iepe");
+    
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp"); 
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls","true"); //protocolo smtp
-        props.put("mail.debug","true");
-        
-        
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.smtp.ssl.trust", "smtp.gmail.com"); 
+        props.put("mail.debug", "true");
+
+        mailSender.setJavaMailProperties(props);
         return mailSender;
-    
-        
-    
     }
     
 }
